@@ -17,6 +17,7 @@ sys.path.insert(0, str(BASE / "src"))
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
+import matplotlib.pyplot as plt
 
 from search_priority import compute_search_priority
 from explainability import add_explanations
@@ -37,6 +38,11 @@ REPORTS = BASE / "reports"
 
 def load_csv(path, **kwargs):
     return pd.read_csv(path, **kwargs) if Path(path).exists() else None
+
+
+def show_df(df):
+    """Render a DataFrame as an HTML table, bypassing pyarrow."""
+    st.markdown(df.to_html(index=False), unsafe_allow_html=True)
 
 
 case = load_csv(DATA / "synthetic" / "synthetic_case_file.csv")
@@ -88,9 +94,7 @@ if freq is not None:
         last_known_lon=last_known[1],
     )
     ranking = add_explanations(ranking)
-    st.table(
-        ranking[["search_rank", "cluster", "visit_count", "search_priority_score", "explanation"]]
-    )
+    show_df(ranking[["search_rank", "cluster", "visit_count", "search_priority_score", "explanation"]])
 else:
     ranking = None
     st.warning("Run clustering.py to generate frequently visited locations.")
@@ -100,13 +104,27 @@ st.header("📊 Movement Pattern Analysis")
 col1, col2 = st.columns(2)
 with col1:
     st.subheader("Pings per hour of day")
-    st.bar_chart(traj.groupby("hour").size())
+    fig1, ax1 = plt.subplots()
+    hourly = traj.groupby("hour").size()
+    ax1.bar(hourly.index, hourly.values)
+    ax1.set_xlabel("Hour")
+    ax1.set_ylabel("Count")
+    st.pyplot(fig1)
 with col2:
     st.subheader("Pings per weekday")
-    st.bar_chart(traj.groupby("weekday").size())
+    fig2, ax2 = plt.subplots()
+    weekly = traj.groupby("weekday").size()
+    ax2.bar(weekly.index, weekly.values)
+    ax2.set_xlabel("Weekday")
+    ax2.set_ylabel("Count")
+    st.pyplot(fig2)
 
 st.subheader("Speed distribution (km/h)")
-st.line_chart(traj["speed_kmh"].reset_index(drop=True))
+fig3, ax3 = plt.subplots()
+ax3.plot(traj["speed_kmh"].reset_index(drop=True))
+ax3.set_xlabel("Index")
+ax3.set_ylabel("Speed (km/h)")
+st.pyplot(fig3)
 
 # ---------------- Anomalies ----------------
 st.header("⚠️ Detected Anomalies")
@@ -114,20 +132,20 @@ st.caption("An anomaly flag means the movement statistically differs from the su
            "normal pattern. It does NOT imply suspicious or criminal behavior.")
 anomalies = traj[traj.get("anomaly_consensus", 0) == 1]
 st.write(f"{len(anomalies)} anomalous points out of {len(traj)} total (consensus of ≥2 detectors).")
-st.table(anomalies[["timestamp", "latitude", "longitude", "speed_kmh",
+show_df(anomalies[["timestamp", "latitude", "longitude", "speed_kmh",
                     "iforest_anomaly", "lof_anomaly", "ocsvm_anomaly"]])
 
 # ---------------- Probable Route ----------------
 st.header("🧭 Probable Route")
 if route is not None:
-    st.table(route)
+    show_df(route)
 else:
     st.warning("Run route_prediction.py to generate the probable route.")
 
 # ---------------- Model Comparison ----------------
 if model_compare is not None:
     st.header("🤖 Location Prediction Model Comparison")
-    st.table(model_compare)
+    show_df(model_compare)
 
 # ---------------- Interactive Map ----------------
 st.header("🗺️ Interactive Investigation Map")
