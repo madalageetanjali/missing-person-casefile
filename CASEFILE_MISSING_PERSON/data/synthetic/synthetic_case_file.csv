@@ -1,0 +1,2 @@
+case_id,subject_id,subject_name,age_group,last_known_latitude,last_known_longitude,last_known_timestamp,reported_missing_timestamp,notes
+CASE-2025-0001,U001,"Fictional Subject A (synthetic case, not a real person)",25-34,28.6304,77.2177,2026-09-05 18:45:00,2026-09-05 22:00:00,Synthetic/fictional case created for academic ML project purposes only.

@@ -1,0 +1,4 @@
+cluster,visit_count,center_lat,center_lon,visit_frequency_norm,model_probability,route_probability,recency_norm,distance_km_from_last_known,proximity_score,search_priority_score,search_rank,explanation
+0,5330,28.62038220616948,77.21271233995623,1.0,0.0,0.0,0.5,1.215657425556826,1.0,0.525,1,High historical visit frequency at this location. Distance from last known location is consistent with historical movement range.
+2,205,28.625125427635314,77.1948658561697,0.0,0.0,0.0,0.5,2.3045281102156494,0.1662671524349024,0.0916267152434902,2,Included due to combined lower-weight signals; no single dominant factor.
+1,243,28.610402444744352,77.22988398617281,0.0074146341463414,0.0,0.0,0.5,2.5216761194812065,0.0,0.0775951219512195,3,Included due to combined lower-weight signals; no single dominant factor.
