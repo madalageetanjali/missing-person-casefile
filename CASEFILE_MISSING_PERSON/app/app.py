@@ -88,9 +88,8 @@ if freq is not None:
         last_known_lon=last_known[1],
     )
     ranking = add_explanations(ranking)
-    st.dataframe(
-        ranking[["search_rank", "cluster", "visit_count", "search_priority_score", "explanation"]],
-        use_container_width=True,
+    st.table(
+        ranking[["search_rank", "cluster", "visit_count", "search_priority_score", "explanation"]]
     )
 else:
     ranking = None
@@ -115,21 +114,20 @@ st.caption("An anomaly flag means the movement statistically differs from the su
            "normal pattern. It does NOT imply suspicious or criminal behavior.")
 anomalies = traj[traj.get("anomaly_consensus", 0) == 1]
 st.write(f"{len(anomalies)} anomalous points out of {len(traj)} total (consensus of ≥2 detectors).")
-st.dataframe(anomalies[["timestamp", "latitude", "longitude", "speed_kmh",
-                         "iforest_anomaly", "lof_anomaly", "ocsvm_anomaly"]],
-             use_container_width=True)
+st.table(anomalies[["timestamp", "latitude", "longitude", "speed_kmh",
+                    "iforest_anomaly", "lof_anomaly", "ocsvm_anomaly"]])
 
 # ---------------- Probable Route ----------------
 st.header("🧭 Probable Route")
 if route is not None:
-    st.dataframe(route, use_container_width=True)
+    st.table(route)
 else:
     st.warning("Run route_prediction.py to generate the probable route.")
 
 # ---------------- Model Comparison ----------------
 if model_compare is not None:
     st.header("🤖 Location Prediction Model Comparison")
-    st.dataframe(model_compare, use_container_width=True)
+    st.table(model_compare)
 
 # ---------------- Interactive Map ----------------
 st.header("🗺️ Interactive Investigation Map")
