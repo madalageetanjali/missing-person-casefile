@@ -1,0 +1,19 @@
+# CASEFILE: Missing Person Investigation & Location Prediction System
+# Install with: pip install -r requirements.txt
+
+pandas>=2.0
+numpy>=1.24
+scipy>=1.10
+scikit-learn>=1.3
+xgboost>=2.0
+shap>=0.44
+folium>=0.15
+streamlit>=1.30
+matplotlib>=3.7
+joblib>=1.3
+
+# Optional (only needed if you want full GIS shapefile/OSM polygon support
+# instead of the lightweight lat/lon approach used by default in this project).
+# geopandas can be tricky to install (needs GDAL); skip unless you need it.
+# geopandas>=0.14
+# osmnx>=1.9
